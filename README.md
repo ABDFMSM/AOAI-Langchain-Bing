@@ -2,11 +2,11 @@
 
 **This repo is an updated version of the AzureGPTwithBingSeach repo, however, now I am using the langchain framework to allow the GPT model to access the model via Bing search API.** 
 
-In this repo I will be using Azure OpenAI, Langchain, and Bing Search to let Azure GPT get their information from the internet.
+In this repo I will be using Azure OpenAI GPT-4 Turbo, Langchain, and Bing Search to let Azure GPT get their information from the internet.
 
 * [Bing Web Search API](https://learn.microsoft.com/en-us/bing/search-apis/bing-web-search/overview) used to return webpages related to the query. 
 * [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) used with the page content to provide an answer to the question.
-* [Langchain](https://www.langchain.com/)
+* [Langchain](https://www.langchain.com/) library that is used to create the chatbot agent. 
 
 This repo improves on the last repo by the following: 
 1- We only require chat completion model from the Azure OpenAI. (No need for a completion model to extract key-words). 
