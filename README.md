@@ -9,12 +9,10 @@ In this repo I will be using Azure OpenAI GPT-4 Turbo, Langchain, and Bing Searc
 * [Langchain](https://www.langchain.com/) library that is used to create the chatbot agent. 
 
 This repo improves on the last repo by the following: 
-1- We only require chat completion model from the Azure OpenAI. (No need for a completion model to extract key-words). 
-2- Use BingSearch from the langchain library in order to use it as a tool for the langchain agent. 
-3- Using a langchain agent that allows to store the chat history, use various tools, and display the thought process of the AOAI model. 
-4- We can return multiple webpages to enrich the AOAI model with information. (This also means that AOAI will process more tokens and occur more cost)
-
-
+1) We only require chat completion model from the Azure OpenAI. (No need for a completion model to extract key-words).
+2) Use BingSearch from the langchain library in order to use it as a tool for the langchain agent.
+3) Using a langchain agent that allows to store the chat history, use various tools, and display the thought process of the AOAI model.
+4) We can return multiple webpages to enrich the AOAI model with information. (This also means that AOAI will process more tokens and occur more cost)
 
 # Table of contents:
 - [Step 1 - Getting Things Ready](https://github.com/ABDFMSM/AzureGPTwithBingSeach?tab=readme-ov-file#step-1---getting-things-ready)  
