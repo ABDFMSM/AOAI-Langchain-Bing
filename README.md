@@ -48,7 +48,10 @@ I have created .env file that will contain the keys and endpoints for the Bing a
 On VScode you can create an empty file and you name it .env which should contain the following: 
   ![EnvFile](Images/EnvFile.png)
 
-## Configuring Bing Web Seach Resrouce
+## Configuring AOAI and Bing Seach Resoruce
+We will need to get the Key and Endpoint for the AOAI model from the Azure portal as shown below: 
+![AOAIKey&Endpoint](Images/AOAIKey&Endpoint.png) 
+
 We will need to get the Bing Web Search key and store the value in the .env file as shown: 
 ![Bing Key](Images/BingKey.png) 
 
