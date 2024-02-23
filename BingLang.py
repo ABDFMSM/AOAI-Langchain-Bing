@@ -12,7 +12,6 @@ import requests
 
 
 load_dotenv()
-
 search = BingSearchAPIWrapper()
 
 # The bingsearch snippet doesn't always provide enough information.
@@ -26,6 +25,7 @@ def WebContent(query):
     links = []
     contents = []
     for result in results: 
+        #Some pages don't return expected result so we use a try except method to avoid getting an errors. 
         try:
             webpage = requests.get(result['link'], headers)
             soup = BeautifulSoup(webpage.content, 'html.parser')
@@ -75,7 +75,7 @@ agent = create_openai_tools_agent(llm, [tool], prompt)
 agent_executor = AgentExecutor(
     agent=agent,
     tools=[tool],
-    verbose=True,
+    verbose=True, #Set to true to view the thought process in the AOAI model.
     memory=memory,
     max_iterations= 8 # Number of tries to retrieve data before exiting agent. 
 )
