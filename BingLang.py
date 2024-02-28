@@ -9,6 +9,8 @@ from langchain_core.prompts.chat import ChatPromptTemplate, HumanMessagePromptTe
 from langchain.memory import ConversationBufferWindowMemory
 from bs4 import BeautifulSoup
 import requests
+from datetime import datetime  
+import pytz  
 
 
 load_dotenv()
@@ -38,13 +40,43 @@ def WebContent(query):
             continue
     return contents, links
 
+def get_time_in_timezone(timezone):  
+    try:  
+        # Create a timezone object using pytz  
+        tz = pytz.timezone(timezone)  
+          
+        # Get the current time in that timezone  
+        current_time = datetime.now(tz)  
+          
+        # Format the time to a string if necessary  
+        time_str = current_time.strftime('%Y-%m-%d %H:%M:%S %Z%z')  
+          
+        return time_str  
+    except pytz.exceptions.UnknownTimeZoneError:  
+        return "Unknown timezone. Please provide a valid timezone."  
+
+def get_weather(city_name):   
+
+    base_url = "http://api.weatherapi.com/v1/current.json"  
+    api_key = os.getenv("Weather_API")
+    complete_url = f"{base_url}?key={api_key}&q={city_name}"  
+  
+    response = requests.get(complete_url)  
+  
+    # Check if the request was successful  
+    if response.status_code == 200:  
+        weather_data = response.json()  
+        return weather_data  
+    else:  
+        return "Failed to get weather data."  
+
 # Configuring the prompt, memeory, and LLM for the chatbot 
 prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
-            content="""You are an AI assistance who can access the internet through bing_search tool. 
+            content="""You are an AI assistance who can access the internet through bing_search tool and to time information via check_time tool. 
             The bing_search tool will return the webpage content that contains information that you can use to answer user's question. 
-            Whenever asked about time, weather, and date use the bing_search tool and just provide a short answer. 
+            Whenever asked about time and date use the check_time tool and for weather related questions use check_weather tool and just provide a short answer. 
             For other questions provide a max of one paragraph unless instructed otherwise.
             If you get blocked or access deny, try another query for the bing_search tool to get access to a different website.
             Talk a bit to the user while grabbing the result. 
@@ -70,11 +102,23 @@ tool = Tool(
     func=WebContent
 )
 
+tool2 = Tool(
+    name="check_time",
+    description="Used to return country's time",
+    func=get_time_in_timezone
+)
+
+tool3 = Tool(
+    name="check_weather", 
+    description="Used to find weather information about a city", 
+    func=get_weather
+)
+
 # Creating the langchain agent: 
 agent = create_openai_tools_agent(llm, [tool], prompt)
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=[tool],
+    tools=[tool, tool2, tool3],
     verbose=True, #Set to true to view the thought process in the AOAI model.
     memory=memory,
     max_iterations= 8 # Number of tries to retrieve data before exiting agent. 
