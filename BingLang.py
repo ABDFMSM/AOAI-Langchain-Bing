@@ -77,7 +77,7 @@ def get_weather(city_name):
 prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
-            content="""You are an AI assistance who can access the internet through bing_search tool and to time information via check_time tool. 
+            content="""You are an AI assistance who can access the internet through bing_search tool and to time and weather information via check_time and check_weather tools. 
             The bing_search tool will return the webpage content that contains information that you can use to answer user's question. 
             Whenever asked about time and date use the check_time tool and for weather related questions use check_weather tool and just provide a short answer. 
             For other questions provide a max of one paragraph unless instructed otherwise.
