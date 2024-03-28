@@ -62,7 +62,7 @@ search = BingSearchAPIWrapper()
 I have created a function that will return Webpages from the Bing search API related to answer the user's question. 
 This function will be used as a tool for the langchain agent. 
 ``` Python
-def WebContent(query):
+def web_content(query):
     """
     This tool is used to return the WebPage contents and can be used to answer user's questions. 
     """
@@ -92,9 +92,9 @@ Also to make the AOAI aware of the tools via "agent_scratchpad", the chat histor
 prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
-            content="""You are an AI assistance who can access the internet through bing_search tool. 
+            content="""You are an AI assistance who can access the internet through bing_search tool and to time and weather information via check_time and check_weather tools. 
             The bing_search tool will return the webpage content that contains information that you can use to answer user's question. 
-            Whenever asked about time, weather, and date use the bing_search tool and just provide a short answer. 
+            Whenever asked about time and date use the check_time tool and for weather related questions use check_weather tool and just provide a short answer. 
             For other questions provide a max of one paragraph unless instructed otherwise.
             If you get blocked or access deny, try another query for the bing_search tool to get access to a different website.
             Talk a bit to the user while grabbing the result. 
@@ -113,21 +113,33 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 ```
-Here I configure the memory to keep chat history, the tool that would use WebContent function and the AOAI model that would be used by the agent. 
+Here I configure the memory to keep chat history, and I also configured the different tools that for the defined functions (web_content, get_time, get_weather) and the AOAI model that would be used by the agent. 
 ``` Python
 memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True, k= 8) #Chat memory window that keeps k messages. 
 llm = AzureChatOpenAI(azure_deployment=os.getenv("Chat_deployment"), streaming=True)
 tool = Tool(
     name="bing_search",
     description="Search Bing for recent results.",
-    func=WebContent
+    func=web_content
+)
+
+tool2 = Tool(
+    name="check_time",
+    description="Used to return country's time",
+    func=get_time
+)
+
+tool3 = Tool(
+    name="check_weather", 
+    description="Used to find weather information about a city", 
+    func=get_weather
 )
 
 # Creating the langchain agent: 
 agent = create_openai_tools_agent(llm, [tool], prompt)
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=[tool],
+    tools=[tool, tool2, tool3],
     verbose=True, #Set to true to view the thought process in the AOAI model.
     memory=memory,
     max_iterations= 8 # Number of tries to retrieve data before exiting agent. 
