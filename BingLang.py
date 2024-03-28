@@ -12,13 +12,13 @@ import requests
 from datetime import datetime  
 import pytz  
 
-
+# Loading the environmental variables and creating an instance of the BingSearch 
 load_dotenv()
 search = BingSearchAPIWrapper()
 
 # The bingsearch snippet doesn't always provide enough information.
 # I am getting the whole webpage content to feed it to the GPT to answer user's questions. 
-def WebContent(query):
+def web_content(query):
     """
     This tool is used to return the WebPage contents and can be used to answer user's questions. 
     """
@@ -39,8 +39,9 @@ def WebContent(query):
         except:
             continue
     return contents, links
-
-def get_time_in_timezone(timezone):  
+    
+# Function to return the current time for a given time zone
+def get_time(timezone):  
     try:  
         # Create a timezone object using pytz  
         tz = pytz.timezone(timezone)  
@@ -55,6 +56,8 @@ def get_time_in_timezone(timezone):
     except pytz.exceptions.UnknownTimeZoneError:  
         return "Unknown timezone. Please provide a valid timezone."  
 
+# Function to return weather information about a given city. 
+# Get the API key by creating an account here: https://www.weatherapi.com/
 def get_weather(city_name):   
 
     base_url = "http://api.weatherapi.com/v1/current.json"  
@@ -96,6 +99,8 @@ prompt = ChatPromptTemplate.from_messages(
 )
 memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True, k= 8) #Chat memory window that keeps k messages. 
 llm = AzureChatOpenAI(azure_deployment=os.getenv("Chat_deployment"), streaming=True)
+
+# Converting the functions to tools to be used for the langchian agent
 tool = Tool(
     name="bing_search",
     description="Search Bing for recent results.",
